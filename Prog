@@ -4,6 +4,7 @@ import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.motorcontrol.Spark;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class Robot extends TimedRobot {
   
@@ -14,16 +15,21 @@ public class Robot extends TimedRobot {
   private Spark rightMotor1 = new Spark(2);
   private Spark rightMotor2 = new Spark(3);
   private Spark coletorMotor1 = new Spark(4);
-  private Spark shooterMotor1 = new Spark(5);
-  private Spark shooterMotor2 = new Spark(6);
-  private Spark shooterMotor3 = new Spark(8);
+  private Spark shooterMotor1 = new Spark(5); 
+  private Spark shooterMotor2 = new Spark(6); 
+  private Spark shooterMotor3 = new Spark(8); 
   private Joystick joy1 = new Joystick(0);
   private Joystick joy2 = new Joystick(1);
   double velocidade1 = -1;
   double autonomo = 1;
   double giro1 = 1.1;
-  double hawe = 1;
-  
+
+  protected void execute() {
+   
+    SmartDashboard.putNumber(drivetrain.get(velocidade1), velocidade1);
+    
+  }
+
   @Override
   public void robotInit() {
     leftMotor1.addFollower(leftMotor2);
@@ -99,7 +105,7 @@ public class Robot extends TimedRobot {
   }
 
   public void teleopPeriodic() {
-
+  
   double velocidade = joy1.getRawAxis(1) * velocidade1;  
   double giro = joy1.getRawAxis(2) * giro1;
 
@@ -121,6 +127,8 @@ if (joy1.getRawButtonPressed(5)) {
     giro1 = giro1 - 0.25;
 }
 
+System.out.println(velocidade1);
+
 if (joy2.getRawButtonPressed(2)){
   coletorMotor1.set(1);
 }
@@ -128,22 +136,20 @@ if (joy2.getRawButtonReleased(2)) {
   coletorMotor1.set(0);
 }
 if (joy2.getRawButtonPressed(1)){
+
+  shooterMotor2.set(-1);
+  shooterMotor1.set(-1); 
+  try {
+        Thread.sleep(300);
+      } catch (Exception erro) {
+      } 
   shooterMotor3.set(-1);
 }
-if (joy2.getRawButtonPressed(1)){
-  shooterMotor2.set(-1);
-}
-if (joy2.getRawButtonPressed(1)){
-  shooterMotor1.set(-1);
-}
+
 if (joy2.getRawButtonReleased(1)) {
-  shooterMotor3.set(0);
-}
-if (joy2.getRawButtonReleased(1)) {
-  shooterMotor2.set(0);
-}
-if (joy2.getRawButtonPressed(1)){
+  shooterMotor3.set(0); 
+  shooterMotor2.set(0); 
   shooterMotor1.set(0);
 }
-}
+  }
 }
