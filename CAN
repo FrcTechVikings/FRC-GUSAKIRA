@@ -1,0 +1,170 @@
+package frc.robot.CANSparkMax;
+
+import edu.wpi.first.wpilibj.Joystick;
+import edu.wpi.first.wpilibj.TimedRobot;
+import edu.wpi.first.wpilibj.motorcontrol.Spark;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj.motorcontrol.MotorController;
+
+public class CANSparkMax extends CANSparkBase {
+  
+  private String m_autoSelected;
+  private final SendableChooser<String> m_chooser = new SendableChooser<>();
+  CANSparkMax leftMotor1 = new CANSparkMax(0); // colocar id e tipo motor dps em tds
+  CANSparkMax leftMotor2 = new CANSparkMax(1);
+  CANSparkMax rightMotor1 = new CANSparkMax(2);
+  CANSparkMax rightMotor2 = new CANSparkMax(3);
+  CANSparkMax coletorMotor1 = new CANSparkMax(4);
+  CANSparkMax shooterMotor1 = new CANSparkMax(5); ////primeira (verde)
+  CANSparkMax shooterMotor2 = new CANSparkMax(6); //segunda
+  CANSparkMax shooterMotor3 = new CANSparkMax(8); // última
+  Joystick joy1 = new Joystick(0);
+  Joystick joy2 = new Joystick(1);
+  double velocidade1 = -1;
+  double autonomo = 1;
+  double giro1 = 1.1;
+
+  protected void execute() {
+   
+    SmartDashboard.putNumber(drivetrain.get(velocidade1), velocidade1);
+    
+  }
+
+  @Override
+  public void robotInit() {
+    leftMotor1.addFollower(leftMotor2);
+    rightMotor1.addFollower(rightMotor2);
+
+  }
+
+
+  
+  @Override
+  public void robotPeriodic() {
+    
+  }
+
+  
+  @Override
+  public void autonomousInit() {
+    m_autoSelected = m_chooser.getSelected();
+    System.out.println("Auto selected: " + m_autoSelected);
+    autonomo = 1;
+  }
+
+  @Override
+  public void autonomousPeriodic() {
+    if (autonomo == 1) {
+      rightMotor1.set(0.3);
+      leftMotor1.set(-0.265);
+      try {
+        Thread.sleep(1500);
+      } catch (Exception erro) {
+      } 
+      rightMotor1.set(0.4);
+      leftMotor1.set(0.4);
+      try {
+        Thread.sleep(1710);
+      } catch (Exception erro) {
+      } 
+      rightMotor1.set(-0.29);
+      leftMotor1.set(0.3);
+      coletorMotor1.set(1);
+      try {
+        Thread.sleep(2500);
+      } catch (Exception erro) {
+      } 
+      coletorMotor1.set(0);
+      rightMotor1.set(0.4);
+      leftMotor1.set(0.4);
+      try {
+        Thread.sleep(1500);
+      } catch (Exception erro) {
+      } 
+      rightMotor1.set(-0.3);
+      leftMotor1.set(0.29);
+      try {
+        Thread.sleep(3000);
+      } catch (Exception erro) {
+      } 
+      rightMotor1.set(0);
+      leftMotor1.set(0);
+      try {
+        Thread.sleep(999999999);
+      } catch (Exception erro) {
+      } 
+  }
+  }
+   public void teleopInit() {
+    coletorMotor1.set(0);
+    leftMotor1.set(0);
+    leftMotor2.set(0);
+    rightMotor1.set(0);
+    rightMotor2.set(0);
+
+  }
+
+  public void teleopPeriodic() {
+  
+  double velocidade = joy1.getRawAxis(1) * velocidade1;  
+  double giro = joy1.getRawAxis(2) * giro1;
+
+  double esquerda = -velocidade + giro;
+  double direita = -velocidade - giro;
+
+  leftMotor1.set(-esquerda/1.35);// tem que ser igual
+  leftMotor2.set(-esquerda/1.35); //tem que ser igual, pode ser diferente no autonomo
+  rightMotor1.set(direita);
+  rightMotor2.set(direita);
+  
+  if (joy1.getRawButtonPressed(6)) {
+    velocidade1 = velocidade1 - 0.25;
+    giro1 = giro1 + 0.25;
+    
+}
+if (joy1.getRawButtonPressed(5)) {
+    velocidade1 = velocidade1 + 0.25;
+    giro1 = giro1 - 0.25;
+}
+
+System.out.println(velocidade1);
+
+if (joy2.getRawButtonPressed(2)){
+  coletorMotor1.set(1);
+}
+if (joy2.getRawButtonReleased(2)) {
+  coletorMotor1.set(0);
+}
+if (joy2.getRawButtonPressed(1)){
+
+  shooterMotor2.set(-1);
+  shooterMotor1.set(-1); 
+  try {
+        Thread.sleep(300);
+      } catch (Exception erro) {
+      } 
+  shooterMotor3.set(-1);
+}
+if (joy2.getRawButtonReleased(1)) {
+  shooterMotor3.set(0); 
+  shooterMotor2.set(0); 
+  shooterMotor1.set(0);
+}
+if (joy2.getRawButtonPressed(3)){
+
+  shooterMotor3.set(1);
+  shooterMotor1.set(1); 
+  try {
+        Thread.sleep(300);
+      } catch (Exception erro) {
+      } 
+  shooterMotor2.set(1);
+}
+if (joy2.getRawButtonReleased(3)) {
+  shooterMotor3.set(0); 
+  shooterMotor2.set(0); 
+  shooterMotor1.set(0);
+}
+  }
+}
